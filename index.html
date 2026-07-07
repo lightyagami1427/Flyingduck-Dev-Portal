@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flyingduck Developer Portal — Security Workspace</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Left Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-icon">F</div>
+      <span class="logo-text">flyingduck</span>
+      <span class="logo-tag">dev</span>
+    </div>
+
+    <div class="workspace-container">
+      <select class="workspace-select" id="workspaceSelector">
+        <option value="personal">Personal Workspace</option>
+        <option value="flyingduck-org">Flyingduck Corp (All)</option>
+        <option value="payments-team">Payments Security Team</option>
+      </select>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group-title">WORKSPACE</div>
+      <ul class="nav-list">
+        <li>
+          <a href="#dashboard" class="nav-link active" data-view="dashboard">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z" />
+            </svg>
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="#repositories" class="nav-link" data-view="repositories">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+            </svg>
+            Repositories
+          </a>
+        </li>
+        <li>
+          <a href="#pull-requests" class="nav-link" data-view="pull-requests">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            </svg>
+            Pull Requests
+          </a>
+        </li>
+        <li>
+          <a href="#commits" class="nav-link" data-view="commits">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+            </svg>
+            Commits
+          </a>
+        </li>
+      </ul>
+
+      <div class="nav-group-title">SECURITY CORE</div>
+      <ul class="nav-list">
+        <li>
+          <a href="#findings" class="nav-link" data-view="findings">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            Findings
+          </a>
+        </li>
+        <li>
+          <a href="#ai-remediation" class="nav-link" data-view="ai-remediation">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            AI Remediation
+          </a>
+        </li>
+        <li>
+          <a href="#dependencies" class="nav-link" data-view="dependencies">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            Dependencies
+          </a>
+        </li>
+        <li>
+          <a href="#secrets" class="nav-link" data-view="secrets">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m-5 8a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM18 8a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Secrets
+          </a>
+        </li>
+        <li>
+          <a href="#sbom" class="nav-link" data-view="sbom">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            SBOM
+          </a>
+        </li>
+        <li>
+          <a href="#scan-history" class="nav-link" data-view="scan-history">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Scan History
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-profile-card">
+        <div class="avatar">AN</div>
+        <div class="user-info">
+          <span class="user-name">akhilnishtala</span>
+          <span class="user-role">Lead DevSecOps Eng</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Layout -->
+  <main class="main-layout">
+    
+    <!-- Top Navbar -->
+    <header class="top-navbar">
+      <div class="nav-left">
+        <div class="breadcrumbs" id="breadcrumbTrail">
+          <span>Portal</span>
+          <span class="breadcrumb-separator">/</span>
+          <span class="breadcrumb-active">Dashboard</span>
+        </div>
+        
+        <div class="repo-filter-container">
+          <span class="breadcrumb-separator" style="margin-right: 8px;">•</span>
+          <select class="repo-select" id="globalRepoFilter">
+            <option value="all">All Repositories</option>
+            <option value="auth-service">auth-service</option>
+            <option value="payment-gateway">payment-gateway</option>
+            <option value="web-frontend">web-frontend</option>
+            <option value="data-pipeline">data-pipeline</option>
+            <option value="admin-dashboard">admin-dashboard</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="nav-right">
+        <!-- Global Search Bar trigger -->
+        <div class="global-search-bar" id="searchTrigger">
+          <svg xmlns="http://www.w3.org/2000/svg" style="width:16px; height:16px; color:var(--text-tertiary);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input type="text" placeholder="Search security issues..." readonly>
+          <span class="search-shortcut">⌘K</span>
+        </div>
+
+        <!-- Notifications Trigger -->
+        <button class="icon-button" id="notificationBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" style="width:20px; height:20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+          <div class="notification-dot"></div>
+        </button>
+        
+        <!-- Notifications Dropdown Drawer -->
+        <div class="notifications-dropdown" id="notificationDropdown">
+          <div class="notif-header">
+            <span>Notifications</span>
+            <button class="btn btn-secondary btn-sm" id="clearNotifBtn" style="font-size:10px; padding:3px 6px;">Clear all</button>
+          </div>
+          <div class="notif-list" id="notifList">
+            <!-- Populated dynamically by app.js -->
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dynamic Content Container -->
+    <div class="content-area" id="mainContent">
+      <!-- Injected by app.js -->
+    </div>
+  </main>
+
+  <!-- Global Command+K Search Modal -->
+  <div class="modal-overlay" id="searchModalOverlay">
+    <div class="search-modal">
+      <div class="search-modal-header">
+        <svg xmlns="http://www.w3.org/2000/svg" style="width:20px; height:20px; color:var(--text-tertiary);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input type="text" class="search-modal-input" id="searchModalInput" placeholder="Search findings, commits, PRs, or packages..." autocomplete="off">
+        <span class="search-shortcut">ESC</span>
+      </div>
+      <div class="search-modal-results" id="searchModalResults">
+        <!-- Results populated dynamically by app.js -->
+      </div>
+      <div class="modal-footer-tips">
+        <span>↑↓ to navigate</span>
+        <span>Enter to select</span>
+        <span>Type # for PRs, @ for Repositories</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
