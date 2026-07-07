@@ -531,15 +531,12 @@ function renderDashboard(container) {
   const openFindings = DB.findings.filter(f => f.status === 'Open' && matchesRepoFilter(f));
   const openPrs = DB.prs.filter(pr => matchesRepoFilter(pr));
   const recentCommits = DB.commits.filter(c => matchesRepoFilter(c));
-  const recentScans = DB.scans.filter(matchesRepoFilter);
-  const totalSecrets = DB.secrets.filter(matchesRepoFilter);
 
   // Overview calculations
   const activeReposCount = activeRepos.length;
   const openPrsCount = openPrs.length;
   const recentCommitsCount = recentCommits.length;
   const openFindingsCount = openFindings.length;
-  const criticalRisksCount = openFindings.filter(f => f.severity === 'Critical').length;
   const aiFixesReadyCount = openFindings.filter(f => f.codeRemediation).length;
 
   // Severity counts
@@ -572,377 +569,205 @@ function renderDashboard(container) {
     </div>
 
     <!-- 1. Overview Cards -->
-    <div class="overview-grid">
-      <div class="card" style="padding: 16px;">
-        <div class="score-label" style="font-size:10px;">Active Repositories</div>
-        <div style="font-size: 26px; font-weight: 800; font-family: var(--font-header); margin-top: 4px;">${activeReposCount}</div>
+    <div class="overview-grid" style="grid-template-columns: repeat(5, 1fr); margin-bottom: 32px;">
+      <div class="card" style="padding: 20px; border-radius: var(--radius-lg);">
+        <div class="score-label" style="font-size:11px; font-weight:700;">Active Repositories</div>
+        <div style="font-size: 28px; font-weight: 800; font-family: var(--font-header); margin-top: 6px;">${activeReposCount}</div>
       </div>
-      <div class="card" style="padding: 16px;">
-        <div class="score-label" style="font-size:10px;">Open Pull Requests</div>
-        <div style="font-size: 26px; font-weight: 800; font-family: var(--font-header); margin-top: 4px;">${openPrsCount}</div>
+      <div class="card" style="padding: 20px; border-radius: var(--radius-lg);">
+        <div class="score-label" style="font-size:11px; font-weight:700;">Open Pull Requests</div>
+        <div style="font-size: 28px; font-weight: 800; font-family: var(--font-header); margin-top: 6px;">${openPrsCount}</div>
       </div>
-      <div class="card" style="padding: 16px;">
-        <div class="score-label" style="font-size:10px;">Recent Commits</div>
-        <div style="font-size: 26px; font-weight: 800; font-family: var(--font-header); margin-top: 4px;">${recentCommitsCount}</div>
+      <div class="card" style="padding: 20px; border-radius: var(--radius-lg);">
+        <div class="score-label" style="font-size:11px; font-weight:700;">Recent Commits</div>
+        <div style="font-size: 28px; font-weight: 800; font-family: var(--font-header); margin-top: 6px;">${recentCommitsCount}</div>
       </div>
-      <div class="card" style="padding: 16px;">
-        <div class="score-label" style="font-size:10px;">Open Findings</div>
-        <div style="font-size: 26px; font-weight: 800; font-family: var(--font-header); margin-top: 4px; color:${openFindingsCount > 0 ? 'var(--severity-high-text)' : 'inherit'}">${openFindingsCount}</div>
+      <div class="card" style="padding: 20px; border-radius: var(--radius-lg);">
+        <div class="score-label" style="font-size:11px; font-weight:700;">Open Findings</div>
+        <div style="font-size: 28px; font-weight: 800; font-family: var(--font-header); margin-top: 6px; color:${openFindingsCount > 0 ? 'var(--severity-high-text)' : 'inherit'}">${openFindingsCount}</div>
       </div>
-      <div class="card" style="padding: 16px;">
-        <div class="score-label" style="font-size:10px;">Critical Risks</div>
-        <div style="font-size: 26px; font-weight: 800; font-family: var(--font-header); margin-top: 4px; color:${criticalRisksCount > 0 ? 'var(--severity-critical-text)' : 'inherit'}">${criticalRisksCount}</div>
-      </div>
-      <div class="card" style="padding: 16px; background-color: var(--brand-light); border-color: rgba(51, 85, 255, 0.2);">
-        <div class="score-label" style="font-size:10px; color: var(--brand-primary);">AI Fixes Ready</div>
-        <div style="font-size: 26px; font-weight: 800; font-family: var(--font-header); margin-top: 4px; color: var(--brand-primary);">${aiFixesReadyCount}</div>
+      <div class="card" style="padding: 20px; border-radius: var(--radius-lg); background-color: var(--brand-light); border-color: rgba(51, 85, 255, 0.25);">
+        <div class="score-label" style="font-size:11px; font-weight:700; color: var(--brand-primary);">AI Fixes Ready</div>
+        <div style="font-size: 28px; font-weight: 800; font-family: var(--font-header); margin-top: 6px; color: var(--brand-primary);">${aiFixesReadyCount}</div>
       </div>
     </div>
 
-    <div class="dashboard-grid-2x1">
-      <!-- Donut/Bar Chart for Severity -->
-      <div class="panel">
-        <div class="panel-title">Issue Severity Overview</div>
-        <div class="posture-bar">
-          <div class="posture-segment critical" style="width: ${critPct}%" title="Critical: ${critCount}"></div>
-          <div class="posture-segment high" style="width: ${highPct}%" title="High: ${highCount}"></div>
-          <div class="posture-segment medium" style="width: ${medPct}%" title="Medium: ${medCount}"></div>
-          <div class="posture-segment low" style="width: ${lowPct}%" title="Low: ${lowCount}"></div>
-          <div class="posture-segment info" style="width: ${infoPct}%" title="Informational: ${infoCount}"></div>
-        </div>
+    <!-- 2. Dual-Column Workspace -->
+    <div class="dashboard-grid-2x1" style="gap: 32px; margin-bottom: 32px;">
+      
+      <!-- Left Column (Core Work) -->
+      <div style="display:flex; flex-direction:column; gap:28px;">
         
-        <div class="posture-legend">
-          <div class="legend-item">
-            <div class="legend-color"><span class="legend-dot critical"></span>Critical</div>
-            <div class="legend-val" style="color: var(--severity-critical-text);">${critCount}</div>
-          </div>
-          <div class="legend-item">
-            <div class="legend-color"><span class="legend-dot high"></span>High</div>
-            <div class="legend-val" style="color: var(--severity-high-text);">${highCount}</div>
-          </div>
-          <div class="legend-item">
-            <div class="legend-color"><span class="legend-dot medium"></span>Medium</div>
-            <div class="legend-val" style="color: var(--severity-medium-text);">${medCount}</div>
-          </div>
-          <div class="legend-item">
-            <div class="legend-color"><span class="legend-dot low"></span>Low</div>
-            <div class="legend-val" style="color: var(--severity-low-text);">${lowCount}</div>
-          </div>
-          <div class="legend-item">
-            <div class="legend-color"><span class="legend-dot info"></span>Info</div>
-            <div class="legend-val" style="color: var(--severity-info-text);">${infoCount}</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Security Trends SVGs -->
-      <div class="panel">
-        <div class="panel-title" style="display:flex; justify-content:space-between; align-items:center;">
-          <span>Security Trends (30 Days)</span>
-          <div style="font-size:11px; font-weight:600; display:flex; gap:8px;">
-            <span style="color:var(--severity-high)">● Introduced</span>
-            <span style="color:var(--status-success)">● Patched</span>
-          </div>
-        </div>
-        <svg class="trend-chart-svg" viewBox="0 0 500 120" style="height:90px;">
-          <line x1="20" y1="10" x2="480" y2="10" class="chart-grid-line" />
-          <line x1="20" y1="50" x2="480" y2="50" class="chart-grid-line" />
-          <line x1="20" y1="90" x2="480" y2="90" class="chart-grid-line" />
-          <path class="chart-line-findings" d="M 20 80 L 100 50 L 180 70 L 260 40 L 340 30 L 420 85 L 480 90" style="stroke-width: 2.5;"></path>
-          <path class="chart-line-resolved" d="M 20 90 L 100 80 L 180 85 L 260 60 L 340 40 L 420 50 L 480 30" style="stroke-width: 2.5;"></path>
-          <text x="20" y="110" class="chart-axis-text">Day 1</text>
-          <text x="240" y="110" class="chart-axis-text">Day 15</text>
-          <text x="450" y="110" class="chart-axis-text">Day 30</text>
-        </svg>
-      </div>
-    </div>
-
-    <!-- 2. Recent Commits (Prominent) -->
-    <div class="dashboard-section-title">
-      <span>Recent Commit Impact Scans</span>
-      <span style="font-size:12px; font-weight:500; color:var(--text-tertiary);">Track security introduced on latest shas</span>
-    </div>
-    <div class="table-container">
-      <table class="custom-table">
-        <thead>
-          <tr>
-            <th>Commit Message</th>
-            <th>Repository</th>
-            <th>Branch</th>
-            <th>Hash</th>
-            <th>Scan Status</th>
-            <th>Findings Introduced</th>
-            <th>Findings Resolved</th>
-            <th>Risk Score</th>
-            <th>Commit Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${recentCommits.map(c => `
-            <tr onclick="window.location.hash='#commit-detail?sha=${c.sha}'">
-              <td style="font-weight:600; color:var(--text-primary); max-width:240px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${c.message}</td>
-              <td style="font-family:var(--font-code); font-size:13px;">${c.repo}</td>
-              <td style="font-family:var(--font-code); font-size:12px; font-weight:600; color:var(--text-secondary);">${c.branch || 'main'}</td>
-              <td style="font-family:var(--font-code); font-size:13px; color:var(--brand-primary); font-weight:600;">${c.sha}</td>
-              <td><span class="badge badge-${c.status === 'Passed' ? 'success' : c.status === 'Failed' ? 'error' : 'warning'}">${c.status}</span></td>
-              <td style="font-weight:700; color:${c.issuesIntroduced > 0 ? 'var(--severity-critical-text)' : 'var(--text-tertiary)'}">+${c.issuesIntroduced}</td>
-              <td style="font-weight:700; color:${c.issuesResolved > 0 ? 'var(--status-success-text)' : 'var(--text-tertiary)'}">-${c.issuesResolved}</td>
-              <td><span style="font-family:var(--font-code); font-weight:800; color:${c.riskScore > 70 ? 'var(--severity-critical-text)' : c.riskScore > 40 ? 'var(--severity-high-text)' : 'var(--status-success-text)'}">${c.riskScore}</span></td>
-              <td style="font-size:12px;">${c.date}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    </div>
-
-    <!-- 3. Recent Pull Requests -->
-    <div class="dashboard-section-title">
-      <span>Recent Pull Request Checks</span>
-    </div>
-    <div class="table-container">
-      <table class="custom-table">
-        <thead>
-          <tr>
-            <th>Pull Request</th>
-            <th>Repository</th>
-            <th>Source Branch</th>
-            <th>Destination Branch</th>
-            <th>Security Status</th>
-            <th>Findings Introduced</th>
-            <th>Findings Resolved</th>
-            <th>Merge Readiness</th>
-            <th>Last Scan</th>
-            <th>Updated Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${openPrs.map(pr => `
-            <tr onclick="window.location.hash='#pr-detail?id=${pr.id}'">
-              <td>
-                <div style="font-weight:600; color:var(--text-primary);">${pr.title}</div>
-                <div style="font-size:11px; color:var(--text-tertiary);">${pr.number} by ${pr.author}</div>
-              </td>
-              <td style="font-family:var(--font-code); font-size:13px;">${pr.repo}</td>
-              <td style="font-family:var(--font-code); font-size:12px; color:var(--text-secondary); font-weight:600;">${pr.branchFrom}</td>
-              <td style="font-family:var(--font-code); font-size:12px; color:var(--text-tertiary);">${pr.branchTo}</td>
-              <td><span class="badge badge-${pr.status === 'Passed' ? 'success' : pr.status === 'Failed' ? 'error' : 'warning'}">${pr.status}</span></td>
-              <td style="font-weight:700; color:${pr.findingsIntroduced > 0 ? 'var(--severity-critical-text)' : 'var(--text-tertiary)'}">+${pr.findingsIntroduced}</td>
-              <td style="font-weight:700; color:${pr.findingsResolved > 0 ? 'var(--status-success-text)' : 'var(--text-tertiary)'}">-${pr.findingsResolved}</td>
-              <td><span class="badge ${pr.mergeReadiness === 'Ready' ? 'badge-success' : 'badge-error'}">${pr.mergeReadiness}</span></td>
-              <td style="font-size:12px;">${pr.lastScan || pr.date}</td>
-              <td style="font-size:12px;">${pr.updatedTime || pr.date}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    </div>
-
-    <!-- 4. Critical Findings Requiring Attention -->
-    <div class="dashboard-section-title">
-      <span>Critical & High Findings Requiring Attention</span>
-    </div>
-    <div class="table-container">
-      <table class="custom-table">
-        <thead>
-          <tr>
-            <th>Finding Name</th>
-            <th>Repository</th>
-            <th>File</th>
-            <th>Severity</th>
-            <th>Introduced In Commit</th>
-            <th>AI Fix Available</th>
-            <th>Current Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${openFindings.filter(f => f.severity === 'Critical' || f.severity === 'High').map(f => `
-            <tr onclick="window.location.hash='#finding-detail?id=${f.id}'">
-              <td>
-                <div style="font-weight:600; color:var(--text-primary);">${f.title}</div>
-                <div style="font-size:11px; color:var(--text-tertiary);">${f.id}</div>
-              </td>
-              <td style="font-family:var(--font-code); font-size:13px;">${f.repo}</td>
-              <td style="font-family:var(--font-code); font-size:13px; color:var(--text-secondary);">${f.filePath}:${f.lineNo}</td>
-              <td><span class="badge badge-${f.severity.toLowerCase()}">${f.severity}</span></td>
-              <td style="font-family:var(--font-code); font-size:13px; color:var(--brand-primary); font-weight:600;">${f.commit}</td>
-              <td><span class="badge badge-success" style="font-size:9px;">Ready</span></td>
-              <td><span class="badge badge-error">${f.status}</span></td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    </div>
-
-    <!-- 5. AI Remediation Ready -->
-    <div class="dashboard-section-title">
-      <span>AI Remediation Ready</span>
-      <span style="font-size:12px; font-weight:500; color:var(--brand-primary);">Fix vulnerability signatures with 1-click patches</span>
-    </div>
-    <div class="ai-fix-grid">
-      ${openFindings.filter(f => f.codeRemediation).map(f => `
-        <div class="ai-fix-card" onclick="window.location.hash='#ai-remediation?id=${f.id}'" style="cursor:pointer;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <span class="badge badge-${f.severity.toLowerCase()}">${f.severity}</span>
-            <span style="font-size:11px; color:var(--status-success-text); font-weight:700; background-color:var(--status-success-bg); padding:2px 6px; border-radius:4px;">${f.aiConfidence || '95%'} Confidence</span>
-          </div>
-          <div style="font-weight:700; font-size:14px; color:var(--text-primary); margin-bottom:4px; font-family:var(--font-header);">${f.title}</div>
-          <div style="font-size:11px; color:var(--text-tertiary); font-family:var(--font-code); margin-bottom:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${f.repo} • ${f.filePath}</div>
-          <p style="font-size:12.5px; color:var(--text-secondary); line-height:1.4; margin-bottom:16px; min-height:36px;">
-            ${f.aiRec}
-          </p>
-          <div style="display:flex; gap:8px;">
-            <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); simulateGeneratePR('${f.id}')" style="flex:1;">Generate PR</button>
-            <button class="btn btn-secondary btn-sm" style="flex:1;">View Fix</button>
-          </div>
-        </div>
-      `).join('')}
-    </div>
-
-    <!-- 6. Repositories and Secrets layout side-by-side -->
-    <div class="dashboard-grid-2x1">
-      
-      <!-- Repository Security Health -->
-      <div class="panel" style="padding: 20px;">
-        <div class="panel-title">Repository Security Health</div>
-        <div class="table-container" style="border:none; box-shadow:none; margin-bottom:0;">
-          <table class="custom-table">
-            <thead>
-              <tr>
-                <th>Repository</th>
-                <th>Score</th>
-                <th>Open Findings</th>
-                <th>Critical</th>
-                <th>Last Scan</th>
-                <th>Trend</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${activeRepos.map(repo => {
-                const repoOpen = DB.findings.filter(f => f.repo === repo.id && f.status === 'Open');
-                const repoCrit = repoOpen.filter(f => f.severity === 'Critical').length;
-                return `
-                  <tr onclick="window.location.hash='#repository-detail?id=${repo.id}'">
-                    <td style="font-weight:600; color:var(--text-primary);">${repo.name}</td>
-                    <td>
-                      <span style="font-family:var(--font-code); font-weight:700; color:${repo.score > 85 ? 'var(--status-success-text)' : repo.score > 70 ? 'var(--status-warning-text)' : 'var(--severity-critical-text)'}">
-                        ${repo.score}/100
-                      </span>
-                    </td>
-                    <td style="font-weight:600;">${repoOpen.length}</td>
-                    <td style="font-weight:700; color:var(--severity-critical-text);">${repoCrit}</td>
-                    <td style="font-size:12px;">${repo.lastScan}</td>
-                    <td style="font-size:12px; font-weight:600; color:${repo.trend === 'Improving' ? 'var(--status-success-text)' : repo.trend === 'Declining' ? 'var(--severity-critical-text)' : 'var(--text-tertiary)'}">
-                      ${repo.trend === 'Improving' ? '↑ Improving' : repo.trend === 'Declining' ? '↓ Declining' : '→ Stable'}
-                    </td>
-                  </tr>
-                `;
-              }).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Secret Detection Summary -->
-      <div class="panel" style="padding: 20px;">
-        <div class="panel-title">Secret Leak Summary</div>
-        <div class="table-container" style="border:none; box-shadow:none; margin-bottom:0;">
-          <table class="custom-table">
-            <thead>
-              <tr>
-                <th>Repository</th>
-                <th>Active</th>
-                <th>New</th>
-                <th>Resolved</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${activeRepos.map(repo => {
-                const repoSecrets = DB.secrets.filter(s => s.repo === repo.id);
-                const activeSec = repoSecrets.filter(s => s.status === 'Active').length;
-                const newSec = repoSecrets.filter(s => s.status === 'Active' && s.newlyDetected).length;
-                const resolvedSec = repoSecrets.filter(s => s.status === 'Resolved').length;
-                return `
-                  <tr onclick="window.location.hash='#secrets'">
-                    <td style="font-weight:600; color:var(--text-primary);">${repo.name}</td>
-                    <td style="font-weight:700; color:var(--severity-critical-text);">${activeSec}</td>
-                    <td style="font-weight:700; color:var(--status-warning-text);">${newSec}</td>
-                    <td style="font-weight:700; color:var(--status-success-text);">${resolvedSec}</td>
-                  </tr>
-                `;
-              }).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- 7. Scan Activity and Dependency Risks side-by-side -->
-    <div class="dashboard-grid-2x1">
-      
-      <!-- Recent Scan Activity -->
-      <div class="panel" style="padding: 20px;">
-        <div class="panel-title">Recent Scan Activity</div>
-        <div class="table-container" style="border:none; box-shadow:none; margin-bottom:0;">
-          <table class="custom-table">
-            <thead>
-              <tr>
-                <th>Repository</th>
-                <th>Scan Type</th>
-                <th>Status</th>
-                <th>Duration</th>
-                <th>Findings Summary</th>
-                <th>Completed Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${recentScans.slice(0, 4).map(scan => `
-                <tr onclick="window.location.hash='#scan-history'">
-                  <td style="font-weight:600; color:var(--text-primary);">${scan.repo}</td>
-                  <td style="font-size:13px; font-weight:500;">${scan.scanType || 'Pipeline Scan'}</td>
-                  <td><span class="badge badge-${scan.status === 'Passed' ? 'success' : scan.status === 'Failed' ? 'error' : 'warning'}">${scan.status}</span></td>
-                  <td style="font-family:var(--font-code); font-size:12px;">${scan.duration}</td>
-                  <td style="font-size:12px; color:var(--text-secondary);">${scan.findingsCount} issues (${scan.critical} Crit, ${scan.high} High)</td>
-                  <td style="font-size:12px;">${scan.date}</td>
+        <!-- Active Pull Requests -->
+        <div class="panel" style="padding: 24px; border-radius: var(--radius-lg);">
+          <div class="panel-title" style="margin-bottom: 16px; border-bottom: none; padding-bottom: 0;">Active Pull Requests</div>
+          <div class="table-container" style="border:none; box-shadow:none; margin-bottom:0; overflow:visible;">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Pull Request</th>
+                  <th>Repository</th>
+                  <th>Security Check</th>
+                  <th>Merge Readiness</th>
                 </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Dependency Risks -->
-      <div class="panel" style="padding: 20px;">
-        <div class="panel-title">Third-party Dependency Risks</div>
-        <div class="table-container" style="border:none; box-shadow:none; margin-bottom:0;">
-          <table class="custom-table">
-            <thead>
-              <tr>
-                <th>Repository</th>
-                <th>Vulnerable Libs</th>
-                <th>Critical CVEs</th>
-                <th>Upgrade status</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${activeRepos.map(repo => {
-                const repoDeps = DB.dependencies.filter(d => d.repo === repo.id);
-                const criticalCVEs = repoDeps.filter(d => d.severity === 'Critical').length;
-                return `
-                  <tr onclick="window.location.hash='#dependencies'">
-                    <td style="font-weight:600; color:var(--text-primary);">${repo.name}</td>
-                    <td style="font-family:var(--font-code);">${repo.vulnerableDeps} / ${repo.deps}</td>
-                    <td style="font-weight:700; color:var(--severity-critical-text);">${criticalCVEs}</td>
+              </thead>
+              <tbody>
+                ${openPrs.slice(0, 3).map(pr => `
+                  <tr onclick="window.location.hash='#pr-detail?id=${pr.id}'">
                     <td>
-                      <span class="badge ${repo.vulnerableDeps > 0 ? 'badge-warning' : 'badge-success'}" style="font-size:9px;">
-                        ${repo.vulnerableDeps > 0 ? 'Upgrade Available' : 'No Risks'}
+                      <div style="font-weight: 600; color: var(--text-primary);">${pr.title}</div>
+                      <div style="font-size: 11px; color: var(--text-tertiary);">${pr.number} by ${pr.author}</div>
+                    </td>
+                    <td style="font-family:var(--font-code); font-size:13px;">${pr.repo}</td>
+                    <td>
+                      <span class="badge badge-${pr.status === 'Passed' ? 'success' : pr.status === 'Failed' ? 'error' : 'warning'}">
+                        ${pr.status}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="badge ${pr.mergeReadiness === 'Ready' ? 'badge-success' : 'badge-error'}" style="font-size:10px;">
+                        ${pr.mergeReadiness}
                       </span>
                     </td>
                   </tr>
-                `;
-              }).join('')}
-            </tbody>
-          </table>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
         </div>
+
+        <!-- Recent Commits -->
+        <div class="panel" style="padding: 24px; border-radius: var(--radius-lg);">
+          <div class="panel-title" style="margin-bottom: 16px; border-bottom: none; padding-bottom: 0;">Recent Commits</div>
+          <div class="table-container" style="border:none; box-shadow:none; margin-bottom:0; overflow:visible;">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Commit Message</th>
+                  <th>Repository</th>
+                  <th>Hash</th>
+                  <th>Scan Status</th>
+                  <th>Risk Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${recentCommits.slice(0, 3).map(c => `
+                  <tr onclick="window.location.hash='#commit-detail?sha=${c.sha}'">
+                    <td style="font-weight:600; color:var(--text-primary); max-width: 200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${c.message}</td>
+                    <td style="font-family:var(--font-code); font-size:13px;">${c.repo}</td>
+                    <td style="font-family:var(--font-code); font-size:13px; color:var(--brand-primary); font-weight:600;">${c.sha}</td>
+                    <td>
+                      <span class="badge badge-${c.status === 'Passed' ? 'success' : c.status === 'Failed' ? 'error' : 'warning'}">
+                        ${c.status}
+                      </span>
+                    </td>
+                    <td>
+                      <span style="font-family:var(--font-code); font-weight:800; color:${c.riskScore > 70 ? 'var(--severity-critical-text)' : c.riskScore > 40 ? 'var(--severity-high-text)' : 'var(--status-success-text)'}">
+                        ${c.riskScore}
+                      </span>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column (Insights & AI actions) -->
+      <div style="display:flex; flex-direction:column; gap:28px;">
+        
+        <!-- Posture Card -->
+        <div class="panel" style="padding: 24px; border-radius: var(--radius-lg);">
+          <div class="panel-title" style="margin-bottom: 16px; border-bottom: none; padding-bottom: 0;">Security Posture</div>
+          <div class="posture-bar" style="margin-top: 16px;">
+            <div class="posture-segment critical" style="width: ${critPct}%" title="Critical: ${critCount}"></div>
+            <div class="posture-segment high" style="width: ${highPct}%" title="High: ${highCount}"></div>
+            <div class="posture-segment medium" style="width: ${medPct}%" title="Medium: ${medCount}"></div>
+            <div class="posture-segment low" style="width: ${lowPct}%" title="Low: ${lowCount}"></div>
+            <div class="posture-segment info" style="width: ${infoPct}%" title="Informational: ${infoCount}"></div>
+          </div>
+          <div class="posture-legend" style="grid-template-columns: repeat(3, 1fr); row-gap: 12px;">
+            <div class="legend-item">
+              <div class="legend-color"><span class="legend-dot critical"></span>Critical</div>
+              <div class="legend-val" style="color: var(--severity-critical-text);">${critCount}</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color"><span class="legend-dot high"></span>High</div>
+              <div class="legend-val" style="color: var(--severity-high-text);">${highCount}</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color"><span class="legend-dot medium"></span>Medium</div>
+              <div class="legend-val" style="color: var(--severity-medium-text);">${medCount}</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color"><span class="legend-dot low"></span>Low</div>
+              <div class="legend-val" style="color: var(--severity-low-text);">${lowCount}</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color"><span class="legend-dot info"></span>Info</div>
+              <div class="legend-val" style="color: var(--severity-info-text);">${infoCount}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Remediation Ready -->
+        <div class="panel" style="padding: 24px; border-radius: var(--radius-lg);">
+          <div class="panel-title" style="margin-bottom: 12px; border-bottom: none; padding-bottom: 0;">AI Remediation Ready</div>
+          <div style="display:flex; flex-direction:column; gap:16px; margin-top: 12px;">
+            ${openFindings.filter(f => f.codeRemediation).slice(0, 2).map(f => `
+              <div class="ai-fix-card" onclick="window.location.hash='#ai-remediation?id=${f.id}'" style="cursor:pointer; margin-bottom: 0; box-shadow: none; border: 1px solid var(--border-color); background: var(--bg-secondary);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                  <span class="badge badge-${f.severity.toLowerCase()}">${f.severity}</span>
+                  <span style="font-size:10px; color:var(--status-success-text); font-weight:700;">${f.aiConfidence || '95%'} Match</span>
+                </div>
+                <div style="font-weight:700; font-size:13px; color:var(--text-primary); margin-bottom:2px; font-family:var(--font-header);">${f.title}</div>
+                <div style="font-size:10px; color:var(--text-tertiary); font-family:var(--font-code); margin-bottom:12px;">${f.repo} • ${f.filePath}</div>
+                <div style="display:flex; gap:8px;">
+                  <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); simulateGeneratePR('${f.id}')" style="flex:1; padding: 4px 8px; font-size: 11px;">Generate PR</button>
+                  <button class="btn btn-secondary btn-sm" style="flex:1; padding: 4px 8px; font-size: 11px;">View Fix</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- 3. Critical Findings -->
+    <div class="panel" style="padding: 24px; border-radius: var(--radius-lg); margin-top: 16px;">
+      <div class="panel-title" style="margin-bottom: 16px; border-bottom: none; padding-bottom: 0;">Critical Risks Requiring Attention</div>
+      <div class="table-container" style="border:none; box-shadow:none; margin-bottom:0; overflow:visible;">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Finding Name</th>
+              <th>Repository</th>
+              <th>File</th>
+              <th>Severity</th>
+              <th>Introduced In Commit</th>
+              <th>AI Fix Available</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${openFindings.filter(f => f.severity === 'Critical' || f.severity === 'High').slice(0, 3).map(f => `
+              <tr onclick="window.location.hash='#finding-detail?id=${f.id}'">
+                <td>
+                  <div style="font-weight:600; color:var(--text-primary);">${f.title}</div>
+                  <div style="font-size:11px; color:var(--text-tertiary);">${f.id}</div>
+                </td>
+                <td style="font-family:var(--font-code); font-size:13px;">${f.repo}</td>
+                <td style="font-family:var(--font-code); font-size:13px; color:var(--text-secondary);">${f.filePath}:${f.lineNo}</td>
+                <td><span class="badge badge-${f.severity.toLowerCase()}">${f.severity}</span></td>
+                <td style="font-family:var(--font-code); font-size:13px; color:var(--brand-primary); font-weight:600;">${f.commit}</td>
+                <td><span class="badge badge-success" style="font-size:9px;">Ready</span></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
       </div>
     </div>
   `;
